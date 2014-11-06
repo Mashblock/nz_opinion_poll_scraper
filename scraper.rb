@@ -27,6 +27,7 @@ require 'scraperwiki'
 require 'nokogiri'
 require 'open-uri'
 require 'json'
+require 'base64'
 
 doc = Nokogiri::HTML(open('http://en.wikipedia.org/wiki/Opinion_polling_for_the_next_New_Zealand_general_election'))
 
@@ -50,13 +51,13 @@ rows.each do |row|
   parties.each do |key, party|
     value = cells[key].text
     next if value == ''
-    results.push({
+    result = {
       poll: poll,
       date: date,
       party: party,
       value: value.to_f
-    })
+    }
+    key = Base64.strict_encode64("#{poll} #{date} #{party}")
+    ScraperWiki.save_sqlite([key], result)
   end
 end
-
-ScraperWiki.save_sqlite(["polls"], results)
