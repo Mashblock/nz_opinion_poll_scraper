@@ -1,7 +1,7 @@
 # This is a template for a Ruby scraper on Morph (https://morph.io)
 # including some code snippets below that you should find helpful
 
-# require 'scraperwiki'
+#
 # require 'mechanize'
 #
 # agent = Mechanize.new
@@ -23,6 +23,7 @@
 # is that your final data is written to an Sqlite database called data.sqlite in the current working directory which
 # has at least a table called data.
 
+require 'scraperwiki'
 require 'nokogiri'
 require 'open-uri'
 require 'json'
