@@ -22,3 +22,40 @@
 # on Morph for Ruby (https://github.com/openaustralia/morph-docker-ruby/blob/master/Gemfile) and all that matters
 # is that your final data is written to an Sqlite database called data.sqlite in the current working directory which
 # has at least a table called data.
+
+require 'nokogiri'
+require 'open-uri'
+require 'json'
+
+doc = Nokogiri::HTML(open('http://en.wikipedia.org/wiki/Opinion_polling_for_the_next_New_Zealand_general_election'))
+
+rows = doc.css('table:first tr')
+
+headers = rows[0].css('th')
+
+parties = {}
+
+headers[2..headers.length].each_with_index do |cell, i|
+  parties[i+2] = cell.text
+end
+
+results = []
+
+rows.each do |row|
+  cells = row.css('td')
+  next unless cells.length > 1
+  poll = cells[0].text.gsub(/\[.*\]/, '')
+  date = cells[1].text.gsub(/\[.*\]/, '')
+  parties.each do |key, party|
+    value = cells[key].text
+    next if value == ''
+    results.push({
+      poll: poll,
+      date: date,
+      party: party,
+      value: value.to_f
+    })
+  end
+end
+
+ScraperWiki.save_sqlite(["polls"], results)
