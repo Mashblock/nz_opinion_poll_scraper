@@ -60,6 +60,6 @@ rows.each do |row|
       value: value.to_f
     }
 
-    ScraperWiki.save_sqlite(['key'], result)
+    ScraperWiki.save_sqlite([:key], result)
   end
 end
