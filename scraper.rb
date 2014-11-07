@@ -51,13 +51,15 @@ rows.each do |row|
   parties.each do |key, party|
     value = cells[key].text
     next if value == ''
+    key = Base64.strict_encode64("#{poll} #{date} #{party}")
     result = {
+      key: key,
       poll: poll,
       date: date,
       party: party,
       value: value.to_f
     }
-    key = Base64.strict_encode64("#{poll} #{date} #{party}")
-    ScraperWiki.save_sqlite([key], result)
+
+    ScraperWiki.save_sqlite(['key'], result)
   end
 end
